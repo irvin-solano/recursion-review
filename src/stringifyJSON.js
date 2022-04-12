@@ -3,29 +3,44 @@
 
 // but you don't so you're going to write it from scratch:
 
-//1.force the value in to a string
-
-
-
 var stringifyJSON = function (obj) {
   // your code goes here
   var finalString = '';
-  //if type of obj => num, force it into a string
   if (typeof obj === 'number') {
     finalString = finalString + obj;
   }
-
-  // else if (Array.isArray(obj)) {
-  //   // elseif type of obj => array , add stringified bracket and to the final string
-  //   finalString += '[';
-  //   for (var i = 0; i < obj.length; i++) {
-  //     //iterate over the array and add elements one by one , separated by a comma
-  //     finalString += obj[i] + ',';
-  //   }
-  //   finalString += ']';
-  // }
-
-
+  if (obj === null) {
+    finalString = 'null';
+  }
+  if (typeof obj === 'boolean') {
+    finalString = finalString + obj;
+  }
+  if (typeof obj === 'string') {
+    finalString = '"' + obj + '"';
+  } else if (Array.isArray(obj)) {
+    finalString += '[';
+    for (var i = 0; i < obj.length; i++) {
+      if (i === obj.length - 1) {
+        finalString += stringifyJSON(obj[i]);
+      } else {
+        finalString += stringifyJSON(obj[i]) + ',';
+      }
+    }
+    finalString += ']';
+  } else if (!Array.isArray(obj) && typeof obj === 'object' && obj !== null) {
+    finalString += '{';
+    var keys = Object.keys(obj);
+    for (var key in obj) {
+      if (obj[key] !== undefined && typeof obj[key] !== 'function') {
+        if (keys[keys.length - 1] === key) {
+          finalString += stringifyJSON(key) + ':' + stringifyJSON(obj[key]);
+        } else {
+          finalString += stringifyJSON(key) + ':' + stringifyJSON(obj[key]) + ',';
+        }
+      }
+    }
+    finalString += '}';
+  }
 
   return finalString;
 };
